@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sequence Properties</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    label {
+      margin-bottom: 5px;
+    }
+    input[type="text"] {
+      padding: 5px;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #result {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Sequence Properties</h1>
+  <form id="sequence-form">
+    <label for="sequence">Enter a peptide sequence:</label>
+    <input type="text" id="sequence" name="sequence" required>
+    <button type="submit">Get Sequence Properties</button>
+    <p>Processing the sequence can take around a minute</p>
+  </form>
+  <div id="result">
+    <div class="loader" style="display: none;"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('sequence-form');
+    const resultDiv = document.getElementById('result');
+    const loader = resultDiv.querySelector('.loader');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const sequence = document.getElementById('sequence').value;
+
+      loader.style.display = 'block';
+
+      try {
+        const response = await fetch('https://r4nhbflnf5h755xzqbvlp2vyne0dwuqg.lambda-url.us-east-1.on.aws/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sequence })
+        });
+
+        const data = await response.json();
+        console.log(data);
+        const { antimicrobial, antiinflammatory, metalbinding } = data;
+
+        let resultHTML = '';
+        resultHTML += `Antimicrobial: ${antimicrobial}<br>`;
+        resultHTML += `Anti-inflammatory: ${antiinflammatory}<br>`;
+        resultHTML += 'Metal Binding:<br>';
+
+        for (const [metal, value] of Object.entries(metalbinding)) {
+          resultHTML += `&nbsp;&nbsp;- ${metal}: ${value}<br>`;
+        }
+
+        resultDiv.innerHTML = resultHTML;
+      } catch (error) {
+        resultDiv.innerHTML = 'An error occurred while processing the request.';
+        console.error('Error:', error);
+      } finally {
+        loader.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

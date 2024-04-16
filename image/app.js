@@ -225,7 +225,8 @@ exports.handler = async (event, context) => {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'An error occurred while processing the request' }),
+      body: JSON.stringify({ error: 'An error occurred while processing the request', event: event, context: context }),
+
     };
   }
 };

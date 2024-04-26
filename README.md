@@ -1,4 +1,4 @@
-# Sequence Properties Web Application
+# Sequence Properties Web Application [[demo](https://peptide-tool.netlify.app/)] [[project website](https://avacarr06.wixsite.com/human-milk-peptides)]
 
 This project is a web application that allows users to input a peptide sequence and retrieve various properties of the sequence, including its antimicrobial potential, anti-inflammatory potential, and metal-binding potential.
 
